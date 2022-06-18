@@ -10,8 +10,16 @@ Welcome to your new app.
 
 @foreach(var v in list)
 {
+    cnt += 1;
+    
     <span>@v</span>
     <br />
+    if (cnt == 10)
+    {
+        Console.WriteLine("adding button");
+        <button type="submit" id="@cnt" @onclick="ShowDialog">Show Dialog</button>
+        <br />
+    }
 }
 
 @if(list.Count == 0)
@@ -25,39 +33,40 @@ Welcome to your new app.
  <span>@message</span>
 
 @code{
-      List<string> list = new List<string>();
-       private bool IsVisible { get; set; } = true;
+    int cnt =0;
+    List<string> list = new List<string>();
+    private bool IsVisible { get; set; } = true;
 
-       [CascadingParameter] 
-        public IModalService Modal { get; set; }
+    [CascadingParameter] 
+    public IModalService Modal { get; set; }
 
-        string message = "";
-        ModalOptions options = new ModalOptions
+    string message = "";
+    ModalOptions options = new ModalOptions
         {
             HideCloseButton = true,
             DisableBackgroundCancel = true,
             HideHeader = true
 
         };
-      protected async override Task OnAfterRenderAsync(bool firstRender)
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
         {
-            if(firstRender)
+            for (int i = 0; i < 50; i++)
             {
-                for (int i = 0; i < 50; i++)
-                {
-                    list.Add("This is item " + i.ToString());
-                }
+                list.Add("This is item " + i.ToString());
             }
-          
-            await  base.OnAfterRenderAsync(firstRender);
-         
-            return;
         }
 
-         private async Task ShowDialog()
-        {
-           
-            var modalRef = Modal?.Show<LoadingSpinner>(string.Empty, options);
+        await  base.OnAfterRenderAsync(firstRender);
+
+        return;
+    }
+
+    private async Task ShowDialog()
+    {
+        cnt = 0;
+        var modalRef = Modal?.Show<LoadingSpinner>(string.Empty, options);
             try
             {
                           
