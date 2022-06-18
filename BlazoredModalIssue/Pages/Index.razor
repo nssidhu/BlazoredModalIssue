@@ -16,19 +16,28 @@ Welcome to your new app.
     <br />
     if (cnt == 10)
     {
-        Console.WriteLine("adding button");
-        <button type="submit" id="@cnt" @onclick="ShowDialog">Show Dialog</button>
-        <br />
+        try
+        {
+            Console.WriteLine("adding button");
+            <button type="submit" id="@cnt" @onclick="ShowDialog">Show Dialog</button>
+            <br />
+        }
+        catch (Exception e)
+        {
+
+            Console.WriteLine(e.Message);
+        }
+      
     }
 }
 
 @if(list.Count == 0)
 {
- <button type="submit" @onclick="StateHasChanged">Generate Long List</button>
+    <button type="button" @onclick="GenerateList">Generate Long List</button>
 }
  <br/>
   <br/>
- <button type="submit" @onclick="ShowDialog">Show Dialog</button>
+ <button type="button" id="-1" @onclick="ShowDialog">Show Dialog</button>
   <br/>
  <span>@message</span>
 
@@ -48,19 +57,16 @@ Welcome to your new app.
             HideHeader = true
 
         };
-    protected async override Task OnAfterRenderAsync(bool firstRender)
+
+
+    private async Task GenerateList()
     {
-        if(firstRender)
+        list = new List<string>();
+        for (int i = 0; i < 50; i++)
         {
-            for (int i = 0; i < 50; i++)
-            {
-                list.Add("This is item " + i.ToString());
-            }
+            list.Add("This is item " + i.ToString());
         }
-
-        await  base.OnAfterRenderAsync(firstRender);
-
-        return;
+        //StateHasChanged();
     }
 
     private async Task ShowDialog()
@@ -74,7 +80,7 @@ Welcome to your new app.
               
                await Task.Delay(4000);
                 message = "completed";
-                StateHasChanged();
+               // StateHasChanged();
              
             }
             catch (Exception)
